@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}H!{% endblock %}
+
+{% block body %}
+
+    {% for reservations in reservations %}
+
+    {{ reservations.beds }}
+
+    {% endfor %}
+
+{% endblock %}
