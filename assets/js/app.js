@@ -13,11 +13,11 @@ require('bootstrap');
 
  // import the function from greet.js (the .js extension is optional)
      // ./ (or ../) means to look for a local file
-         var greet = require('./greet');
+   //      var greet = require('./greet');
 
-+ $(document).ready(function() {
-         $('body').prepend('<h1>'+greet('john')+'</h1>');
-     });
+// $(document).ready(function() {
+//         $('body').prepend('<h1>'+greet('john')+'</h1>');
+ //    });
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 // import $ from 'jquery';
 

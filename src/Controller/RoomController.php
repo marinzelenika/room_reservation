@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Reservation;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Entity;
+use App\Entity\Room;
+use App\Repository\RoomRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -13,14 +12,32 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DefaultController extends AbstractController
+class RoomController extends AbstractController
 {
+    /**
+     * @Route("/", name="room")
+     */
+    public function index()
+    {
+        $rooms = $this->getDoctrine()->getManager()->getRepository(Room::class)->findAll();
+
+        return $this->render('room/index.html.twig', [
+            'rooms' => $rooms,
+        ]);
+    }
 
     /**
-     * @Route("/r", name="default")
+     * @Route("/rooms/{roomId}", name="findroom")
      */
-    public function index(Request $request)
+    public function showRoomsAction($roomId, Request $request)
     {
+        $room = $this->getDoctrine()
+            ->getRepository(Room::class)
+            ->find($roomId);
+
+        $reservations = $room->getReservations();
+        $rooms = $this->getDoctrine()->getRepository(Room::class)->findAll();
+
         $reservation = new Reservation();
         $form = $this->createFormBuilder($reservation)
             ->add('date1', DateType::class, array('label' => 'Arrival date', 'attr'=>array('class'=>'form-control mb-3')))
@@ -36,8 +53,8 @@ class DefaultController extends AbstractController
             //  $entityManager->persist($reservation);
             // $entityManager->flush();
 
-                $dateFirst = $form->get('date1')->getData()->format('Y-m-d');
-                $dateSecond = $form->get('date2')->getData()->format('Y-m-d');
+            $dateFirst = $form->get('date1')->getData()->format('Y-m-d');
+            $dateSecond = $form->get('date2')->getData()->format('Y-m-d');
 
             $response = $this->forward('App\Controller\DefaultController::listreservations', [
                 'dateFirst'  => $dateFirst,
@@ -48,30 +65,30 @@ class DefaultController extends AbstractController
 
         }
 
-
-
-        return $this->render('default/index.html.twig', array('form' => $form->createView()));
+        return $this->render('room/rooms.html.twig', array('reservations' => $reservations,'room'=>$room, 'rooms' => $rooms, 'form' => $form->createView()));
     }
+
+
 
     /**
-     * @Route("/reservations/{dateFirst}/{dateSecond}", name="display_res")
+     * @Route("/rooms/{dateFirst}/{dateSecond}", name="is_available")
      */
-    public function listreservations($dateFirst, $dateSecond, Request $request){
+    public function listreservations($dateFirst, $dateSecond, Request $request)
+    {
         $conn = $this->getDoctrine()->getConnection();
-        $sql = 'SELECT * FROM room
-        WHERE id NOT IN(SELECT room_id FROM reservation WHERE :dateFirst BETWEEN date1 AND date2 OR :dateSecond BETWEEN date1 AND date2)';
+        $sql = 'SELECT * FROM reservation
+                WHERE NOT :dateFirst BETWEEN date1 AND date2';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['dateFirst' => $dateFirst, 'dateSecond' => $dateSecond]);
+        $stmt->execute(['dateFirst' => $dateFirst]);
         $rooms = $stmt->fetchAll();
-        if (!$rooms){
+        if ($rooms) {
             throw new \Exception('Something went wrong!');
+        } else {
+
+            return $this->render('default/show.html.twig', array('rooms' => $rooms));
+
         }
-
-        return $this->render('default/show.html.twig', array('rooms' => $rooms));
-
     }
-
-
 
 
 }

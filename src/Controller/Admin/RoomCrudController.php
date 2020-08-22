@@ -3,7 +3,15 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Room;
+use App\Form\AttachmentType;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class RoomCrudController extends AbstractCrudController
 {
@@ -12,14 +20,37 @@ class RoomCrudController extends AbstractCrudController
         return Room::class;
     }
 
-    /*
+
     public function configureFields(string $pageName): iterable
     {
-        return [
-            IdField::new('id'),
+       $imageFile =  ImageField::new('thumbnailFile')->setFormType(VichImageType::class);
+         $image =    ImageField::new('thumbnail')->setBasePath('/images/thumbnails');
+        $fields = [
+
             TextField::new('title'),
-            TextEditorField::new('description'),
+            IntegerField::new('beds'),
+            CollectionField::new('attachments')
+                ->setEntryType(AttachmentType::class)
+                ->setFormTypeOption('by_reference', false)
+                ->onlyOnForms(),
+            CollectionField::new('attachments')
+                ->onlyOnDetail()
+                ->setTemplatePath('images.html.twig')
+
+
         ];
+
+        if ($pageName == Crud::PAGE_INDEX || $pageName == Crud::PAGE_DETAIL ){
+            $fields[] = $image;
+        } else{
+            $fields[] = $imageFile;
+        }
+        return $fields;
     }
-    */
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions->add(Crud::PAGE_INDEX,'detail');
+    }
+
 }

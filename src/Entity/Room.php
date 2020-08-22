@@ -6,9 +6,11 @@ use App\Repository\RoomRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=RoomRepository::class)
+ * @Vich\Uploadable()
  */
 class Room
 {
@@ -29,19 +31,76 @@ class Room
      */
     private $beds;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $available;
+
 
     /**
      * @ORM\OneToMany(targetEntity=Reservation::class, mappedBy="room")
      */
     private $reservations;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Attachment::class, mappedBy="room", cascade={"persist"})
+     */
+    private $attachments;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $thumbnail;
+
+    /**
+     * @Vich\UploadableField(mapping="thumbnails", fileNameProperty="thumbnail")
+     */
+    private $thumbnailFile;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt(\DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+
+
+
+    /**
+     * @return mixed
+     */
+    public function getThumbnailFile()
+    {
+        return $this->thumbnailFile;
+    }
+
+    /**
+     * @param mixed $thumbnailFile
+     */
+    public function setThumbnailFile($thumbnailFile): void
+    {
+        $this->thumbnailFile = $thumbnailFile;
+        if ($thumbnailFile){
+            $this->updatedAt = new \DateTime();
+        }
+    }
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -73,17 +132,7 @@ class Room
         return $this;
     }
 
-    public function getAvailable(): ?bool
-    {
-        return $this->available;
-    }
 
-    public function setAvailable(?bool $available): self
-    {
-        $this->available = $available;
-
-        return $this;
-    }
 
     /**
      * @return Collection|Reservation[]
@@ -112,6 +161,53 @@ class Room
                 $reservation->setRoom(null);
             }
         }
+
+        return $this;
+    }
+
+    public function __toString(){
+        return $this->title;
+    }
+
+    /**
+     * @return Collection|Attachment[]
+     */
+    public function getAttachments(): Collection
+    {
+        return $this->attachments;
+    }
+
+    public function addAttachment(Attachment $attachment): self
+    {
+        if (!$this->attachments->contains($attachment)) {
+            $this->attachments[] = $attachment;
+            $attachment->setRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttachment(Attachment $attachment): self
+    {
+        if ($this->attachments->contains($attachment)) {
+            $this->attachments->removeElement($attachment);
+            // set the owning side to null (unless already changed)
+            if ($attachment->getRoom() === $this) {
+                $attachment->setRoom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getThumbnail(): ?string
+    {
+        return $this->thumbnail;
+    }
+
+    public function setThumbnail(string $thumbnail): self
+    {
+        $this->thumbnail = $thumbnail;
 
         return $this;
     }
