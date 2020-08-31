@@ -6,7 +6,7 @@
     {% include 'navbar.html.twig' %}
 
     <div class="container mt-4">
-        <h3 class="mb-2">Na traženi datum slobodne su iduće sobe :</h3>
+        <h3 class="mb-3">Na traženi datum slobodne su iduće sobe :</h3>
         <div class="row">
 
     {% for room in rooms %}
@@ -17,7 +17,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ room.title }}</h5>
                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="{{ path('findroom', {'roomId': room.id}) }}" class="btn btn-primary">Potvrdi</a>
+                    <a href="{{ path('proceedToBasket', {'roomId': room.id}) }}" class="btn btn-primary">Odaberi</a>
                 </div>
             </div>
         </div>

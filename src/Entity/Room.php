@@ -33,10 +33,7 @@ class Room
 
 
 
-    /**
-     * @ORM\OneToMany(targetEntity=Reservation::class, mappedBy="room")
-     */
-    private $reservations;
+
 
     /**
      * @ORM\OneToMany(targetEntity=Attachment::class, mappedBy="room", cascade={"persist"})
@@ -57,6 +54,11 @@ class Room
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Reservation::class, mappedBy="room")
+     */
+    private $reservations;
 
     /**
      * @return \DateTime
@@ -134,36 +136,11 @@ class Room
 
 
 
-    /**
-     * @return Collection|Reservation[]
-     */
-    public function getReservations(): Collection
-    {
-        return $this->reservations;
-    }
 
-    public function addReservation(Reservation $reservation): self
-    {
-        if (!$this->reservations->contains($reservation)) {
-            $this->reservations[] = $reservation;
-            $reservation->setRoom($this);
-        }
 
-        return $this;
-    }
 
-    public function removeReservation(Reservation $reservation): self
-    {
-        if ($this->reservations->contains($reservation)) {
-            $this->reservations->removeElement($reservation);
-            // set the owning side to null (unless already changed)
-            if ($reservation->getRoom() === $this) {
-                $reservation->setRoom(null);
-            }
-        }
 
-        return $this;
-    }
+
 
     public function __toString(){
         return $this->title;
@@ -208,6 +185,34 @@ class Room
     public function setThumbnail(string $thumbnail): self
     {
         $this->thumbnail = $thumbnail;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Reservation[]
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): self
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations[] = $reservation;
+            $reservation->addRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): self
+    {
+        if ($this->reservations->contains($reservation)) {
+            $this->reservations->removeElement($reservation);
+            $reservation->removeRoom($this);
+        }
 
         return $this;
     }

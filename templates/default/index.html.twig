@@ -10,7 +10,14 @@
 
     {% include 'navbar.html.twig' %}
 
-    <img src="{{ asset('build/hotel1.jpg') }}" alt="ACME logo" class="top-image">
+  <!--  <img src="{{ asset('build/hotel1.jpg') }}" alt="ACME logo" class="top-image"> -->
+
+    {% for message in app.flashes('warning') %}
+
+        <div class="alert alert-warning">
+            {{ message }}
+        </div>
+    {% endfor %}
 
 <div class="example-wrapper">
     {{ form_start(form) }}

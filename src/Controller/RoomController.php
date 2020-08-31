@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class RoomController extends AbstractController
 {
     /**
-     * @Route("/", name="room")
+     * @Route("/rr", name="room")
      */
     public function index()
     {
@@ -27,7 +27,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/rooms/{roomId}", name="findroom")
+     * @Route("/rooms", name="findroom")
      */
     public function showRoomsAction($roomId, Request $request)
     {
