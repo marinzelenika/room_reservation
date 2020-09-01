@@ -19,14 +19,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Date;
 
 class DefaultController extends AbstractController
 {
     private $session;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(SessionInterface $session, EntityManagerInterface $entityManager)
     {
         $this->session = $session;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -53,7 +55,7 @@ class DefaultController extends AbstractController
             $dateSecond = $form->get('date2')->getData()->format('Y-m-d');
             $dateNow = new \DateTime('@'.strtotime('now'));
             $dateNow = $dateNow->format('Y-m-d');
-            $this->session->set('dateFirst', $dateFirst);
+
 
             if ($dateSecond <= $dateFirst) {
                 $this->addFlash(
@@ -117,9 +119,12 @@ class DefaultController extends AbstractController
 
 
     /**
-     * @Route("/reservations/proceed/{roomId}", name="proceedToBasket")
+     * @Route("/reservations/proceed/{roomId}/{dateFirst}/{dateSecond}", name="proceedToBasket")
      */
     public function proceedToBasket($dateFirst, $dateSecond, Request $request, $roomId){
+        $checkin = new \DateTime($dateFirst);
+        $checkout = new \DateTime($dateSecond);
+
 
         $room = $this->getDoctrine()
             ->getRepository(Room::class)
@@ -127,21 +132,21 @@ class DefaultController extends AbstractController
 
         $reservation = new Reservation();
         $form = $this->createFormBuilder($reservation)
-            ->add('date1', HiddenType::class, [
-                'data' => $dateFirst,
-            ])
-            ->add('date2', HiddenType::class, [
-                'data' => $dateSecond,
-            ])
+            ->add('date1',HiddenType::class,array('data_class' => null, 'data'=>$checkin))
+            ->add('date2',HiddenType::class,array('data_class' => null, 'data'=>$checkout))
             ->add('email', EmailType::class, array('label' => 'Email', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('telephone', TextType::class, array('label' => 'Broj telefona:', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('name', TextType::class, array('label' => 'Ime i prezime', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('save', SubmitType::class, array('label' => 'Potvrdi', 'attr' => array('class' => 'btn btn-primary mt-4')))
             ->getForm();
         $form->handleRequest($request);
-        if($form->isValid() && $form->isSubmitted()){
-            return $this->redirectToRoute('default');
+        if($form->isSubmitted() && $form->isValid()) {
+            $reservation = $form->getData();
+
+             $entityManager->persist($reservation);
+             $entityManager->flush();
         }
+
 
 
         return $this->render('default/proceed.html.twig', array('form' => $form->createView(), 'room'=>$room));

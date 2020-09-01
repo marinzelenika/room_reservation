@@ -11,13 +11,13 @@
 
     {% for room in rooms %}
 
-        <div class="col-3">
-            <div class="card mr-2" style="width: 18rem;">
+        <div class="col-3 mr-3">
+            <div class="card" style="width: 18rem;">
                 <img class="card-img-top" src="/images/thumbnails/{{ room.thumbnail }}" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title">{{ room.title }}</h5>
                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="{{ path('proceedToBasket', {'roomId': room.id}) }}" class="btn btn-primary">Odaberi</a>
+                    <a href="{{ path('proceedToBasket', {'roomId': room.id, 'dateFirst':dateFirst, 'dateSecond': dateSecond}) }}" class="btn btn-primary">Odaberi</a>
                 </div>
             </div>
         </div>
