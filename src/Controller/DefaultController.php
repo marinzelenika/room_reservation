@@ -121,19 +121,18 @@ class DefaultController extends AbstractController
     /**
      * @Route("/reservations/proceed/{roomId}/{dateFirst}/{dateSecond}", name="proceedToBasket")
      */
-    public function proceedToBasket($dateFirst, $dateSecond, Request $request, $roomId){
-        $checkin = new \DateTime($dateFirst);
-        $checkout = new \DateTime($dateSecond);
+    public function proceedToBasket($dateFirst, $dateSecond, Request $request, $roomId, EntityManagerInterface $entityManager){
 
 
         $room = $this->getDoctrine()
             ->getRepository(Room::class)
             ->find($roomId);
-
+        $dateFirst = date_create_from_format('Y-m-d',$dateFirst);
+        $dateSecond = date_create_from_format('Y-m-d',$dateSecond);
         $reservation = new Reservation();
         $form = $this->createFormBuilder($reservation)
-            ->add('date1',HiddenType::class,array('data_class' => null, 'data'=>$checkin))
-            ->add('date2',HiddenType::class,array('data_class' => null, 'data'=>$checkout))
+            ->add('date1',HiddenType::class,array('empty_data'=>$dateFirst))
+            ->add('date2',HiddenType::class,array('empty_data'=>$dateSecond))
             ->add('email', EmailType::class, array('label' => 'Email', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('telephone', TextType::class, array('label' => 'Broj telefona:', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('name', TextType::class, array('label' => 'Ime i prezime', 'attr'=>array('class'=>'form-control mb-3')))
@@ -145,6 +144,7 @@ class DefaultController extends AbstractController
 
              $entityManager->persist($reservation);
              $entityManager->flush();
+             return $this->redirectToRoute('default');
         }
 
 
