@@ -29,10 +29,7 @@ class Reservation
      */
     private $date2;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $beds;
+
 
     /**
      * @ORM\ManyToMany(targetEntity=Room::class, inversedBy="reservations")
@@ -90,17 +87,7 @@ class Reservation
         return $this;
     }
 
-    public function getBeds(): ?int
-    {
-        return $this->beds;
-    }
 
-    public function setBeds(?int $beds): self
-    {
-        $this->beds = $beds;
-
-        return $this;
-    }
 
     /**
      * @return Collection|Room[]

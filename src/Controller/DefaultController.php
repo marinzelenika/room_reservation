@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Reservation;
 use App\Entity\Room;
+use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Entity;
 use EasyCorp\Bundle\EasyAdminBundle\Field\HiddenField;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -25,10 +27,11 @@ class DefaultController extends AbstractController
 {
     private $session;
 
-    public function __construct(SessionInterface $session, EntityManagerInterface $entityManager)
+    public function __construct(SessionInterface $session, EntityManagerInterface $entityManager, RoomRepository $roomRepository)
     {
         $this->session = $session;
         $this->entityManager = $entityManager;
+        $this->roomRepository = $roomRepository;
     }
 
     /**
@@ -126,7 +129,8 @@ class DefaultController extends AbstractController
 
         $room = $this->getDoctrine()
             ->getRepository(Room::class)
-            ->find($roomId);
+            ->findOneBy(array('id'=>$roomId));
+
         $dateFirst = date_create_from_format('Y-m-d',$dateFirst);
         $dateSecond = date_create_from_format('Y-m-d',$dateSecond);
         $reservation = new Reservation();
@@ -136,6 +140,7 @@ class DefaultController extends AbstractController
             ->add('email', EmailType::class, array('label' => 'Email', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('telephone', TextType::class, array('label' => 'Broj telefona:', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('name', TextType::class, array('label' => 'Ime i prezime', 'attr'=>array('class'=>'form-control mb-3')))
+            ->add('room',EntityType::class,array('empty_data'=>$room->getTitle(),'class'=>Room::class,'multiple'=>true,'expanded'=>true,))
             ->add('save', SubmitType::class, array('label' => 'Potvrdi', 'attr' => array('class' => 'btn btn-primary mt-4')))
             ->getForm();
         $form->handleRequest($request);

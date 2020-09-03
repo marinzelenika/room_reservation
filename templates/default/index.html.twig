@@ -3,14 +3,12 @@
 {% block title %}Hello !{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+
 
     {% include 'navbar.html.twig' %}
 
-  <!--  <img src="{{ asset('build/hotel1.jpg') }}" alt="ACME logo" class="top-image"> -->
+    <img src="{{ asset('build/hotel2.jpg') }}" alt="ACME logo" class="top-image">
+    <div class="centered">Centered</div
 
     {% for message in app.flashes('warning') %}
 
@@ -19,7 +17,7 @@
         </div>
     {% endfor %}
 
-<div class="example-wrapper">
+<div class="container">
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}

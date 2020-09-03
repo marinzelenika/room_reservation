@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use PhpParser\Node\Stmt\Expression;
 
 /**
  * @method Room|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +48,13 @@ class RoomRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findAllAvailableRooms($dateFirst,$dateSecond){
+       return $this->getEntityManager()->getConnection()
+           ->createQueryBuilder('r')->from('Room','r')->where($this->createQueryBuilder('resroom')
+           ->from('Reservation_Room','resroom')->join('Reservation','res')->where(':dateFirst<res.date2')->andWhere(':dateSecond>res.date1'))
+           ->execute(['dateFirst' => $dateFirst, 'dateSecond' => $dateSecond])
+           ->fetchAll();
+
+    }
 }

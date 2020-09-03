@@ -17,3 +17,12 @@ body {
     max-width: 300px;
     max-height: 155px;
 }
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: Verdana;
+    font-size: xx-large;
+    color: #9fa9b7;
+}
