@@ -43,7 +43,7 @@ class DefaultController extends AbstractController
         $form = $this->createFormBuilder($reservation)
             ->add('date1', DateType::class, array('label' => 'Dolazak (Check in)', 'attr'=>array('class'=>'form-control mb-3'),'widget' => 'single_text'))
             ->add('date2', DateType::class, array('label' => 'Odlazak (Check out)', 'attr'=>array('class'=>'form-control mb-3'),'widget' => 'single_text'))
-            ->add('save', SubmitType::class, array('label' => 'Check', 'attr' => array('class' => 'btn btn-primary mt-4')))
+            ->add('save', SubmitType::class, array('label' => 'Provjerite dostupnost', 'attr' => array('class' => 'btn btn-primary mt-4 start-button')))
             ->getForm();
 
 
@@ -140,7 +140,7 @@ class DefaultController extends AbstractController
             ->add('email', EmailType::class, array('label' => 'Email', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('telephone', TextType::class, array('label' => 'Broj telefona:', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('name', TextType::class, array('label' => 'Ime i prezime', 'attr'=>array('class'=>'form-control mb-3')))
-            ->add('room',EntityType::class,array('empty_data'=>$room->getTitle(),'class'=>Room::class,'multiple'=>true,'expanded'=>true,))
+            ->add('room',EntityType::class,array('empty_data'=>$room->getTitle(),'class'=>Room::class,'multiple'=>true,'expanded'=>true, 'choices'=>$this->roomRepository->findAllAvailableRooms($dateFirst,$dateSecond)))
             ->add('save', SubmitType::class, array('label' => 'Potvrdi', 'attr' => array('class' => 'btn btn-primary mt-4')))
             ->getForm();
         $form->handleRequest($request);

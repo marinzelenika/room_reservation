@@ -4,8 +4,10 @@ namespace App\Repository;
 
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpParser\Node\Stmt\Expression;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @method Room|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,9 +17,10 @@ use PhpParser\Node\Stmt\Expression;
  */
 class RoomRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Room::class);
+        $this->entitymanager = $entityManager;
     }
 
     // /**
@@ -50,11 +53,13 @@ class RoomRepository extends ServiceEntityRepository
     */
 
     public function findAllAvailableRooms($dateFirst,$dateSecond){
-       return $this->getEntityManager()->getConnection()
-           ->createQueryBuilder('r')->from('Room','r')->where($this->createQueryBuilder('resroom')
-           ->from('Reservation_Room','resroom')->join('Reservation','res')->where(':dateFirst<res.date2')->andWhere(':dateSecond>res.date1'))
-           ->execute(['dateFirst' => $dateFirst, 'dateSecond' => $dateSecond])
-           ->fetchAll();
+        $conn = $this->getEntityManager();
+        $sql = 'SELECT * FROM room
+        WHERE room.id NOT IN(SELECT room_id FROM reservation_room JOIN reservation ON reservation_room.reservation_id=reservation.id 
+        WHERE :dateFirst < date2 AND :dateSecond > date1)';
+        $stmt = $conn->getConnection()->prepare($sql);
+        $stmt->execute(['dateFirst' => $dateFirst, 'dateSecond' => $dateSecond]);
+        return $stmt->fetchAll();
 
     }
 }
