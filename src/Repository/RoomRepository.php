@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\SqlResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpParser\Node\Stmt\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,13 +55,27 @@ class RoomRepository extends ServiceEntityRepository
     */
 
     public function findAllAvailableRooms($dateFirst,$dateSecond){
-        $conn = $this->getEntityManager();
-        $sql = 'SELECT * FROM room
+        $time1 = strtotime('$dateFirst');
+        $time2 = strtotime('$dateSecond');
+
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult('App\Entity\Room', 'r');
+        $rsm->addFieldResult('r','id','id');
+        $rsm->addFieldResult('r','title','title');
+        $rsm->addJoinedEntityResult('App\Entity\Reservation','res', 'r','reservations');
+        $rsm->addFieldResult('res','date1','date1');
+        $rsm->addFieldResult('res','date2','date2');
+
+
+
+        $query = $this->getEntityManager()->createNativeQuery('SELECT room.id, room.title FROM room
         WHERE room.id NOT IN(SELECT room_id FROM reservation_room JOIN reservation ON reservation_room.reservation_id=reservation.id 
-        WHERE :dateFirst < date2 AND :dateSecond > date1)';
-        $stmt = $conn->getConnection()->prepare($sql);
-        $stmt->execute(['dateFirst' => $dateFirst, 'dateSecond' => $dateSecond]);
-        return $stmt->fetchAll();
+        WHERE ? < date2 AND ? > date1)', $rsm);
+        $query->setParameter(1,$dateFirst);
+        $query->setParameter(2,$dateSecond);
+
+
+        return $query->getResult();
 
     }
 }

@@ -140,7 +140,8 @@ class DefaultController extends AbstractController
             ->add('email', EmailType::class, array('label' => 'Email', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('telephone', TextType::class, array('label' => 'Broj telefona:', 'attr'=>array('class'=>'form-control mb-3')))
             ->add('name', TextType::class, array('label' => 'Ime i prezime', 'attr'=>array('class'=>'form-control mb-3')))
-            ->add('room',EntityType::class,array('empty_data'=>$room->getTitle(),'class'=>Room::class,'multiple'=>true,'expanded'=>true, 'choices'=>$this->roomRepository->findAllAvailableRooms($dateFirst,$dateSecond)))
+            ->add('room',EntityType::class,array('empty_data'=>$room->getTitle(),'row_attr'=>['checked'=>true, 'class'=>'room_form'] ,
+                'class'=>Room::class,'multiple'=>true,'expanded'=>true, 'choices'=>$this->roomRepository->findAllAvailableRooms($dateFirst,$dateSecond)))
             ->add('save', SubmitType::class, array('label' => 'Potvrdi', 'attr' => array('class' => 'btn btn-primary mt-4')))
             ->getForm();
         $form->handleRequest($request);
