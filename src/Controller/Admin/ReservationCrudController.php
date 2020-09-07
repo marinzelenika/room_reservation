@@ -6,6 +6,7 @@ use App\Entity\Reservation;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
@@ -26,9 +27,11 @@ class ReservationCrudController extends AbstractCrudController
         return [
             DateField::new('date1'),
             DateField::new('date2'),
-            IntegerField::new('beds'),
+            TextField::new('email'),
+            TextField::new('telephone'),
+            TextField::new('name'),
 
-            AssociationField::new('room')
+            ArrayField::new('room')
 
         ];
     }
