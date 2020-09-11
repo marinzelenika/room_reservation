@@ -23,7 +23,17 @@
 
     <div class="example-wrapper">
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ form_widget(form.date1) }}
+        {{ form_widget(form.date2) }}
+        {{ form_label(form.email, 'Email: ') }}
+        {{ form_widget(form.email) }}
+        {{ form_label(form.telephone, 'Broj telefona:  ') }}
+        {{ form_widget(form.telephone) }}
+        {{ form_label(form.name, 'Ime i prezime:  ') }}
+        {{ form_widget(form.name) }}
+        {{ form_label(form.room, 'Odaberi još soba:  ') }}
+        {{ form_widget(form.room, {'attr': {'class':'regular-checkbox'} }) }}
         {{ form_end(form) }}
     </div>
 {% endblock %}
+

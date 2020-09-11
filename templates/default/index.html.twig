@@ -22,11 +22,12 @@
         <h3 class="form-text">Dobrodošli u našu villu!</h3>
         <p class="form-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </p>
         <br>
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_start(form,{'attr':{'id':'dates_form'}}) }}
+    {{ form_widget(form.date1,{'attr':{'id':'date1'}}) }}
+        {{ form_widget(form.date2,{'attr':{'id':'date2'}}) }}
     {{ form_end(form) }}
+        <div class="app"></div>
     </div>
-
     <div class="row mt-5 mb-5">
         <div class="column">
             <i class="fa fa-star icon fa-5x" aria-hidden="true"></i>
@@ -117,3 +118,5 @@
         </div>
     </footer>
 {% endblock %}
+
+
