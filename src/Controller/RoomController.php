@@ -9,21 +9,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RoomController extends AbstractController
 {
     /**
-     * @Route("/rr", name="room")
+     * @Route("/api/r", name="room")
      */
     public function index()
     {
-        $rooms = $this->getDoctrine()->getManager()->getRepository(Room::class)->findAll();
-
-        return $this->render('room/index.html.twig', [
-            'rooms' => $rooms,
-        ]);
+        $conn = $this->getDoctrine()->getConnection();
+        $sql = 'SELECT * FROM room';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $rooms = $stmt->fetchAll();
+        $response = new JsonResponse();
+        $response->setData(json_encode($rooms));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
