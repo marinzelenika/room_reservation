@@ -26,7 +26,7 @@ class RoomController extends AbstractController
         $stmt->execute();
         $rooms = $stmt->fetchAll();
         $response = new JsonResponse();
-        $response->setData(json_encode($rooms));
+        $response->setData($rooms);
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
