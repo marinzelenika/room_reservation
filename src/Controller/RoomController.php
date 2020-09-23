@@ -11,12 +11,21 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class RoomController extends AbstractController
 {
+    private $client;
+
+    public function __construct(HttpClientInterface $client)
+    {
+        $this->client = $client;
+    }
+
     /**
-     * @Route("/api/r", name="room")
+     * @Route("/api/r", name="room", methods={"GET"})
      */
     public function index()
     {
@@ -32,46 +41,15 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/rooms", name="findroom")
+     * @Route("/api/getDates", name="getDates", methods={"POST"})
      */
-    public function showRoomsAction($roomId, Request $request)
+    public function showRoomsAction(Request $request)
     {
-        $room = $this->getDoctrine()
-            ->getRepository(Room::class)
-            ->find($roomId);
-
-        $reservations = $room->getReservations();
-        $rooms = $this->getDoctrine()->getRepository(Room::class)->findAll();
-
-        $reservation = new Reservation();
-        $form = $this->createFormBuilder($reservation)
-            ->add('date1', DateType::class, array('label' => 'Arrival date', 'attr'=>array('class'=>'form-control mb-3')))
-            ->add('date2', DateType::class, array('label' => 'End date', 'attr'=>array('class'=>'form-control mb-3')))
-            ->add('save', SubmitType::class, array('label' => 'Check', 'attr' => array('class' => 'btn btn-primary mt-4')))
-            ->getForm();
-
-
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            $reservation = $form->getData();
-
-            //  $entityManager->persist($reservation);
-            // $entityManager->flush();
-
-            $dateFirst = $form->get('date1')->getData()->format('Y-m-d');
-            $dateSecond = $form->get('date2')->getData()->format('Y-m-d');
-
-            $response = $this->forward('App\Controller\DefaultController::listreservations', [
-                'dateFirst'  => $dateFirst,
-                'dateSecond' => $dateSecond,
-            ]);
-            return $response;
-
-
-        }
-
-        return $this->render('room/rooms.html.twig', array('reservations' => $reservations,'room'=>$room, 'rooms' => $rooms, 'form' => $form->createView()));
+        $checkin = $request->query->get("checkin");
+        return new Response($checkin);
     }
+
+
 
 
 
