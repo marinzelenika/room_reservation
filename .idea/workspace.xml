@@ -20,8 +20,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b79e4aad-c39a-48a9-9672-28b86441991b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/room_reservation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/room_reservation.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/RoomController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RoomController.php" afterDir="false" />
     </list>
@@ -179,7 +177,7 @@
       <updated>1598946958785</updated>
       <workItem from="1598946964386" duration="13642000" />
       <workItem from="1599723574417" duration="12851000" />
-      <workItem from="1600863848497" duration="4491000" />
+      <workItem from="1600863848497" duration="13487000" />
     </task>
     <servers />
   </component>

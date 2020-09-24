@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class RoomController extends AbstractController
@@ -41,12 +42,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/api/getDates", name="getDates", methods={"POST"})
+     * @Route("/api/getDates", name="getDates", methods={"POST", "GET"})
      */
-    public function showRoomsAction(Request $request)
+    public function showRoomsAction(Request $request, SerializerInterface $serializer)
     {
-        $checkin = $request->query->get("checkin");
-        return new Response($checkin);
+        $dates = $request->getContent();
+        return new Response($dates);
     }
 
 
