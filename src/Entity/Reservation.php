@@ -6,6 +6,7 @@ use App\Repository\ReservationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ReservationRepository::class)
@@ -21,11 +22,13 @@ class Reservation
 
     /**
      * @ORM\Column(type="date")
+     * @Groups("group1")
      */
     private $date1;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups("group1")
      */
     private $date2;
 

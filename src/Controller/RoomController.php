@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Dates;
 use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Repository\RoomRepository;
@@ -47,7 +48,12 @@ class RoomController extends AbstractController
     public function showRoomsAction(Request $request, SerializerInterface $serializer)
     {
         $dates = $request->getContent();
-        return new Response($dates);
+        $data = $serializer->deserialize($dates,Dates::class, 'json');
+        $checkin =  $data->getCheckin();
+
+
+
+        return new JsonResponse($checkin);
     }
 
 
