@@ -50,6 +50,7 @@ class RoomController extends AbstractController
         $dates = $request->getContent();
         $data = $serializer->deserialize($dates,Dates::class, 'json');
         $checkin =  $data->getCheckin();
+        $checkout = $data->getCheckout();
 
 
 
