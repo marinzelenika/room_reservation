@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Dates;
+use App\Entity\DTOroom;
 use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Repository\RoomRepository;
@@ -10,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,38 +50,43 @@ class RoomController extends AbstractController
     public function showRoomsAction(Request $request, SerializerInterface $serializer)
     {
         $dates = $request->getContent();
+
         $data = $serializer->deserialize($dates,Dates::class, 'json');
         $checkin =  $data->getCheckin();
         $checkout = $data->getCheckout();
 
+        $conn = $this->getDoctrine()->getConnection();
+        $sql = 'SELECT * FROM room
+        WHERE room.id NOT IN(SELECT room_id FROM reservation_room JOIN reservation ON reservation_room.reservation_id=reservation.id 
+        WHERE :checkin < date2 AND :checkout > date1)';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['checkin' => $checkin, 'checkout' => $checkout]);
+        $rooms = $stmt->fetchAll();
 
+        $response = new JsonResponse();
+        $response->setData($rooms);
+        $response->headers->setCookie(Cookie::create('checkin', $checkin));
+        $response->headers->setCookie(Cookie::create('checkout', $checkout));
 
-        return new JsonResponse($checkin);
+        return $response;
     }
-
-
 
 
 
     /**
-     * @Route("/rooms/{dateFirst}/{dateSecond}", name="is_available")
+     * @Route("/api/getRoom", name="getRoom", methods={"POST", "GET"})
      */
-    public function listreservations($dateFirst, $dateSecond, Request $request)
-    {
-        $conn = $this->getDoctrine()->getConnection();
-        $sql = 'SELECT * FROM reservation
-                WHERE NOT :dateFirst BETWEEN date1 AND date2';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(['dateFirst' => $dateFirst]);
-        $rooms = $stmt->fetchAll();
-        if ($rooms) {
-            throw new \Exception('Something went wrong!');
-        } else {
-
-            return $this->render('default/show.html.twig', array('rooms' => $rooms));
-
-        }
+    public function getRoom(Request $request, SerializerInterface $serializer){
+        $room = $request->getContent();
+        $data = $serializer->deserialize($room, DTOroom::class, 'json');
+        $roomid = $data->getRoomid();
+        $response = new JsonResponse();
+        $response->setData($roomid);
+        $response->headers->setCookie(Cookie::create('roomid', $roomid));
+        return $response;
     }
+
+
 
 
 }
