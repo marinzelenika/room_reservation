@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Dates;
+use App\Entity\DTOpersonaldata;
 use App\Entity\DTOroom;
 use App\Entity\Reservation;
 use App\Entity\Room;
@@ -65,8 +66,8 @@ class RoomController extends AbstractController
 
         $response = new JsonResponse();
         $response->setData($rooms);
-        $response->headers->setCookie(Cookie::create('checkin', $checkin));
-        $response->headers->setCookie(Cookie::create('checkout', $checkout));
+        $cookie = new Cookie('myCookie', 'contentOfMyCookie');
+        $response->headers->setCookie($cookie);
 
         return $response;
     }
@@ -82,8 +83,23 @@ class RoomController extends AbstractController
         $roomid = $data->getRoomid();
         $response = new JsonResponse();
         $response->setData($roomid);
-        $response->headers->setCookie(Cookie::create('roomid', $roomid));
+        $response->headers->setCookie(Cookie::create('roomid', $room));
         return $response;
+    }
+
+
+    /**
+     * @Route("/api/postPersonalData", name="postpersdata", methods={"POST", "GET"})
+     */
+    function postPersdata(Request $request, SerializerInterface $serializer){
+        $persData = $request->getContent();
+        $data = $serializer->deserialize($persData, DTOpersonaldata::class, 'json');
+        $email = $data->getEmail();
+        $telephone = $data->getTelephone();
+        $name = $data->getName();
+        $checkin = $data->getCheckin();
+        $checkout = $data->getCheckout();
+        return new JsonResponse([$email, $telephone, $checkin]);
     }
 
 

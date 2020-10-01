@@ -20,11 +20,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b79e4aad-c39a-48a9-9672-28b86441991b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Entity/DTOroom.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/DTOpersonaldata.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/nelmio_cors.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/nelmio_cors.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Admin/RoomCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Admin/RoomCrudController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/RoomController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RoomController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Room.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Room.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +168,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../symf_back" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -181,7 +183,7 @@
       <workItem from="1598946964386" duration="13642000" />
       <workItem from="1599723574417" duration="12851000" />
       <workItem from="1600863848497" duration="13487000" />
-      <workItem from="1601037381114" duration="17607000" />
+      <workItem from="1601037381114" duration="30212000" />
     </task>
     <servers />
   </component>
@@ -201,10 +203,14 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="753" y="229" key="#com.intellij.ide.util.MemberChooser" timestamp="1601387253038">
+    <state x="753" y="229" key="#com.intellij.ide.util.MemberChooser" timestamp="1601553620436">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="753" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1601387253038" />
+    <state x="753" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1601553620436" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1601452039141">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1601452039141" />
     <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1599459464864">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

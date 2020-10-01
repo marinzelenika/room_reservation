@@ -29,6 +29,7 @@ class RoomCrudController extends AbstractCrudController
 
             TextField::new('title'),
             IntegerField::new('beds'),
+            IntegerField::new('quantity'),
             CollectionField::new('attachments')
                 ->setEntryType(AttachmentType::class)
                 ->setFormTypeOption('by_reference', false)

@@ -61,6 +61,11 @@ class Room
     private $reservations;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $quantity;
+
+    /**
      * @return \DateTime
      */
     public function getUpdatedAt(): \DateTime
@@ -213,6 +218,18 @@ class Room
             $this->reservations->removeElement($reservation);
             $reservation->removeRoom($this);
         }
+
+        return $this;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(?int $quantity): self
+    {
+        $this->quantity = $quantity;
 
         return $this;
     }
