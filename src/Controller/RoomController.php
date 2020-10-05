@@ -8,6 +8,7 @@ use App\Entity\DTOroom;
 use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Repository\RoomRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -57,12 +58,15 @@ class RoomController extends AbstractController
         $checkout = $data->getCheckout();
 
         $conn = $this->getDoctrine()->getConnection();
-        $sql = 'SELECT * FROM room
+        $sql = 'SELECT id, title, beds, thumbnail, updated_at, quantity FROM room
         WHERE room.id NOT IN(SELECT room_id FROM reservation_room JOIN reservation ON reservation_room.reservation_id=reservation.id 
         WHERE :checkin < date2 AND :checkout > date1)';
         $stmt = $conn->prepare($sql);
         $stmt->execute(['checkin' => $checkin, 'checkout' => $checkout]);
         $rooms = $stmt->fetchAll();
+
+
+
 
         $response = new JsonResponse();
         $response->setData($rooms);
@@ -91,7 +95,7 @@ class RoomController extends AbstractController
     /**
      * @Route("/api/postPersonalData", name="postpersdata", methods={"POST", "GET"})
      */
-    function postPersdata(Request $request, SerializerInterface $serializer){
+    function postPersdata(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager){
         $persData = $request->getContent();
         $data = $serializer->deserialize($persData, DTOpersonaldata::class, 'json');
         $email = $data->getEmail();
@@ -99,7 +103,21 @@ class RoomController extends AbstractController
         $name = $data->getName();
         $checkin = $data->getCheckin();
         $checkout = $data->getCheckout();
-        return new JsonResponse([$email, $telephone, $checkin]);
+        $roomid = $data->getRoomid();
+
+        $checkin = date_create_from_format('Y-m-d', $checkin);
+        $checkout = date_create_from_format('Y-m-d', $checkout);
+
+        $reservation = new Reservation();
+        $reservation->setDate1($checkin);
+        $reservation->setDate2($checkout);
+        $reservation->setEmail($email);
+        $reservation->setName($name);
+        $reservation->setTelephone($telephone);
+        $reservation->addRoom($roomid);
+
+
+        return new JsonResponse([$email, $telephone, $checkin, $name, $checkout, $roomid]);
     }
 
 

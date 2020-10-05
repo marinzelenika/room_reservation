@@ -4,6 +4,23 @@ namespace App\Entity;
 class DTOpersonaldata {
     private $email;
     private $checkin;
+    private $roomid;
+
+    /**
+     * @return mixed
+     */
+    public function getRoomid()
+    {
+        return $this->roomid;
+    }
+
+    /**
+     * @param mixed $roomid
+     */
+    public function setRoomid($roomid): void
+    {
+        $this->roomid = $roomid;
+    }
 
     /**
      * @return mixed
