@@ -114,7 +114,13 @@ class RoomController extends AbstractController
         $reservation->setEmail($email);
         $reservation->setName($name);
         $reservation->setTelephone($telephone);
-        $reservation->addRoom($roomid);
+        $room = $this->getDoctrine()
+            ->getRepository(Room::class)
+            ->find($roomid);
+        $reservation->addRoom($room);
+
+        $entityManager->persist($reservation);
+        $entityManager->flush();
 
 
         return new JsonResponse([$email, $telephone, $checkin, $name, $checkout, $roomid]);
